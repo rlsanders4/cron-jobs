@@ -1,15 +1,23 @@
 import speedtest
 from datetime import datetime, timedelta
 import os
+import sys
 
 WIFI_SPEED_DATA = os.path.join(os.path.dirname(os.path.realpath(__file__)), "wifi_speed_data.csv")
 
-def check_wifi_speed():
-    st = speedtest.Speedtest()
-    download_speed = st.download() / 1024 / 1024  # Convert to Mbps
-    upload_speed = st.upload() / 1024 / 1024  # Convert to Mbps
-
-    return download_speed, upload_speed
+def check_wifi_speed(max_attempts=5):
+    for attempt in range(max_attempts):
+        try:
+            st = speedtest.Speedtest()
+            download_speed = st.download() / 1024 / 1024  # Convert to Mbps
+            upload_speed = st.upload() / 1024 / 1024  # Convert to Mbps
+            return download_speed, upload_speed
+        except Exception as e:
+            if (attempt == max_attempts - 1):
+                print(f"Error occured: {e}. All attempts failed.")
+                sys.exit(1)
+            else:
+                print(f"Error occured: {e}. Retrying...")
 
 def save_speed_data(download_speed, upload_speed):
     timestamp = datetime.now().isoformat()
