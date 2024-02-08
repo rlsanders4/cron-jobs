@@ -1,6 +1,3 @@
-
-   
-
 import matplotlib.pyplot as plt
 import smtplib
 from email.mime.multipart import MIMEMultipart

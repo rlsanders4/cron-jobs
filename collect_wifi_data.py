@@ -1,6 +1,5 @@
 import speedtest
 from datetime import datetime, timedelta
-import os
 
 WIFI_SPEED_DATA = "wifi_speed_data.csv"
 
