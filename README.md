@@ -8,7 +8,7 @@
 0 * * * * /usr/bin/python3 /path/to/collect_wifi_data.py
 ```
 
-3) Run email_wifi_report.py every Sunday at midnight:
+3) Run email_wifi_report.py at the end of the week:
 ```
-0 0 * * 0 /usr/bin/python3 /path/to/email_wifi_report.py
+59 23 * * 6 /usr/bin/python3 /path/to/email_wifi_report.py
 ```
