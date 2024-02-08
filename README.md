@@ -1,5 +1,6 @@
 # cron-jobs
 
+### Generate a weekly internet speed report (sent to your email)
 1) Create a 'script_data.py' file that contains the constants SENDER_EMAIL, RECIEVER_EMAIL, and APP_PASSWORD with appropriate values.
 
 2) Run collect_wifi_data.py every hour:
