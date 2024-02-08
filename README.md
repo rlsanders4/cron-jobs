@@ -19,5 +19,5 @@ This repo contains a series of scripts that can be used with cron to automate ta
 ## Update linux system with apt package manager
 1) Run <code>system_update.sh</code> every day at 0300. This must be added to the root crontab for correct permissions.
 ```
-0 3 * * * /bin/bash /home/ralph/Documents/cron-jobs/system_update.sh
+0 3 * * * /bin/bash /path/to/system_update.sh
 ```
