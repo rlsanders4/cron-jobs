@@ -1,7 +1,8 @@
 import speedtest
 from datetime import datetime, timedelta
+import os
 
-WIFI_SPEED_DATA = "wifi_speed_data.csv"
+WIFI_SPEED_DATA = os.path.join(os.path.dirname(os.path.realpath(__file__)), "wifi_speed_data.csv")
 
 def check_wifi_speed():
     st = speedtest.Speedtest()

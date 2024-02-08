@@ -9,25 +9,22 @@ from script_data import SENDER_EMAIL, RECIEVER_EMAIL, APP_PASSWORD
 import os
 import shutil
 
-WIFI_SPEED_DATA = "wifi_speed_data.csv"
-WIFI_SPEED_DAILY_AVERAGES = "wifi_speed_daily_averages.png"
+WIFI_SPEED_DATA = os.path.join(os.path.dirname(os.path.realpath(__file__)), "wifi_speed_data.csv")
+
+WIFI_SPEED_DAILY_AVERAGES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "wifi_speed_daily_averages.png")
+
+PYCACHE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "__pycache__")
 
 
 def clean_up():
     #Delete wifi_speed_daily_averags.png
     os.remove(WIFI_SPEED_DAILY_AVERAGES)
-
-    # Get the current directory
-    current_dir = os.getcwd()
-    
-    # Form the path to the __pycache__ folder
-    pycache_path = os.path.join(current_dir, '__pycache__')
     
     # Check if the __pycache__ folder exists
-    if os.path.exists(pycache_path):
+    if os.path.exists(PYCACHE):
         try:
             # Delete the __pycache__ folder and all its contents recursively
-            shutil.rmtree(pycache_path)
+            shutil.rmtree(PYCACHE)
         except OSError as e:
             print(f"Error: {e.strerror}")
 
