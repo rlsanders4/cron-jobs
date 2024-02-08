@@ -1,5 +1,5 @@
 # cron-jobs
-
+This repo contains a series of scripts that can be used with cron to automate tasks on your linux system.
 
 ## Generate a weekly internet speed report (sent to your email)
 1) Create a <code>script_data.py</code> file that contains the constants <code>SENDER_EMAIL</code>, <code>RECIEVER_EMAIL</code>, and <code>APP_PASSWORD</code> with appropriate values.
