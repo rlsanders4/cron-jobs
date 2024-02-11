@@ -19,7 +19,7 @@ def check_wifi_speed(max_attempts=5):
                 sys.exit(1)
             else:
                 print(f"Error occured: {e}. Retrying...")
-                time.sleep(1)
+                time.sleep(10)
 
 def save_speed_data(download_speed, upload_speed):
     timestamp = datetime.now().isoformat()
