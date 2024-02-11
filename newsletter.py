@@ -206,7 +206,7 @@ def clean_up():
             print(f"Error: {e.strerror}")
 
 if __name__ == "__main__":
-    newsletter = Newsletter(True)
+    newsletter = Newsletter()
     scrape_wsj(newsletter)
     scrape_nyt(newsletter)
     get_weather(newsletter, WEATHER_TOKEN, LATITUDE, LONGITUDE, TIMEZONE)
