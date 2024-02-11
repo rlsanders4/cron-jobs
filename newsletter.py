@@ -9,12 +9,11 @@ import datetime
 import pytz
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from script_data import SENDER_EMAIL, RECIEVER_EMAIL, APP_PASSWORD, WEATHER_TOKEN, LATITUDE, LONGITUDE, TIMEZONE, FIREFOX_BINARY
+from script_data import SENDER_EMAIL, RECIEVER_EMAIL, APP_PASSWORD, WEATHER_TOKEN, LATITUDE, LONGITUDE, TIMEZONE, FIREFOX_BINARY, GECKO_DRIVER
 import smtplib
 import os
 import shutil
 
-GECKO_DRIVER = os.path.join(os.path.dirname(os.path.realpath(__file__)), "geckodriver.exe")
 PYCACHE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "__pycache__")
 
 class Newsletter:
@@ -59,7 +58,7 @@ def scrape_wsj(newsletter):
     # Set up Firefox options
     options = Options()
     options.binary_location = FIREFOX_BINARY
-    #options.add_argument("-headless")
+    options.add_argument("-headless")
     #options.set_preference("general.useragent.override", " Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0")
 
     service = Service(GECKO_DRIVER)  # Replace with the path to your geckodriver executable
@@ -99,6 +98,7 @@ def scrape_nyt(newsletter):
     # Set up Firefox options
     options = Options()
     options.binary_location = FIREFOX_BINARY
+    options.add_argument("-headless")
 
     # Set up the Firefox driver
     service = Service(GECKO_DRIVER)  # Replace with the path to your geckodriver executable
@@ -206,7 +206,7 @@ def clean_up():
             print(f"Error: {e.strerror}")
 
 if __name__ == "__main__":
-    newsletter = Newsletter()
+    newsletter = Newsletter(True)
     scrape_wsj(newsletter)
     scrape_nyt(newsletter)
     get_weather(newsletter, WEATHER_TOKEN, LATITUDE, LONGITUDE, TIMEZONE)
