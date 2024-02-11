@@ -184,7 +184,7 @@ def send_email(newsletter):
     msg['Subject'] = "The Morning Report"
 
     if (newsletter.debug):
-        with open('test.html', "r", encoding='utf-8') as text:
+        with open('newsletter_debug.html', "r", encoding='utf-8') as text:
             msg.attach(MIMEText(text.read(), 'html', 'utf-8'))
     else:
         msg.attach(MIMEText(str(newsletter), 'html', 'utf-8'))
