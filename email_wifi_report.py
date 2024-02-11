@@ -10,9 +10,7 @@ import os
 import shutil
 
 WIFI_SPEED_DATA = os.path.join(os.path.dirname(os.path.realpath(__file__)), "wifi_speed_data.csv")
-
 WIFI_SPEED_DAILY_AVERAGES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "wifi_speed_daily_averages.png")
-
 PYCACHE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "__pycache__")
 
 
