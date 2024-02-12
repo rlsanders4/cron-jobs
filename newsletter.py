@@ -28,7 +28,7 @@ class Newsletter:
 <title>The Morning Report</title>
 </head>
 <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; color: #333; line-height: 1.6; padding: 20px; max-width: 600px; margin: auto">
-<h1 style="text-align: center; margin-bottom: 30px; font-size=32px">The Morning Report</h1>
+<h1 style="text-align: center; margin-bottom: 30px; font-size: 32px">The Morning Report</h1>
 '''
     
     def add(self, content):
@@ -272,7 +272,7 @@ def clean_up():
             traceback.print_exc()
 
 if __name__ == "__main__":
-    newsletter = Newsletter(True)
+    newsletter = Newsletter()
     scrape_wsj(newsletter)
     scrape_nyt(newsletter)
     get_weather(newsletter)
