@@ -13,7 +13,7 @@ from config import SENDER_EMAIL, RECIEVER_EMAIL, APP_PASSWORD, WEATHER_TOKEN, LA
 import smtplib
 import os
 import shutil
-from fmp_python.fmp import FMP
+import traceback
 
 PYCACHE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "__pycache__")
 
@@ -88,9 +88,9 @@ def scrape_wsj(newsletter):
             wsj_section += format_article(headline, summary, link)
         
         wsj_section += "</div>"
-    except Exception as e:
+    except:
         print("Error scraping the WSJ:")
-        print(e)
+        traceback.print_exc()
     finally:
         # Close the browser
         driver.quit()
@@ -141,9 +141,9 @@ def scrape_nyt(newsletter):
 
         nyt_section += "</div>"
 
-    except Exception as e:
+    except:
         print("Error scraping the NYT:")
-        print(e)
+        traceback.print_exc()
     finally:
         # Close the browser
         driver.quit()
@@ -183,9 +183,9 @@ def get_weather(newsletter):
         else:
             raise Exception(data["message"])
         
-    except Exception as e:
+    except:
         print("Error getting weather data:")
-        print(e)
+        traceback.print_exc()
 
     newsletter.add(weather_section)
 
@@ -215,9 +215,9 @@ def get_markets(newsletter):
             quote_short_url = f"https://financialmodelingprep.com/api/v3/quote-short/{stock}?apikey={MARKET_TOKEN}"
             quote_short_data = requests.get(quote_short_url).json()[0]
 
-            price = f"{quote_short_data["price"]:.2f}"
-            today = f"{price_change_data["1D"]:.2f}"
-            five_day = f"{price_change_data["5D"]:.2f}"
+            price = f"{quote_short_data['price']:.2f}"
+            today = f"{price_change_data['1D']:.2f}"
+            five_day = f"{price_change_data['5D']:.2f}"
 
             today_color = "red" if float(today) < 0.0 else "green"
             five_day_color = "red" if float(five_day) < 0.0 else "green"
@@ -235,9 +235,9 @@ def get_markets(newsletter):
 </div>
 </div>
 '''
-    except Exception as e:
+    except:
         print ("Error getting market info:")
-        print(e)
+        traceback.print_exc()
     
     newsletter.add(markets_section)
 
@@ -267,8 +267,9 @@ def clean_up():
         try:
             # Delete the __pycache__ folder and all its contents recursively
             shutil.rmtree(PYCACHE)
-        except OSError as e:
-            print(f"Error: {e.strerror}")
+        except:
+            print("Error cleaning files:")
+            traceback.print_exc()
 
 if __name__ == "__main__":
     newsletter = Newsletter(True)

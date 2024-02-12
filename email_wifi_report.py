@@ -5,7 +5,7 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 import csv
 from datetime import datetime, timedelta
-from script_data import SENDER_EMAIL, RECIEVER_EMAIL, APP_PASSWORD
+from config import SENDER_EMAIL, RECIEVER_EMAIL, APP_PASSWORD
 import os
 import shutil
 
