@@ -9,34 +9,33 @@ import datetime
 import pytz
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from script_data import SENDER_EMAIL, RECIEVER_EMAIL, APP_PASSWORD, WEATHER_TOKEN, LATITUDE, LONGITUDE, TIMEZONE, FIREFOX_BINARY, GECKO_DRIVER
+from script_data import SENDER_EMAIL, RECIEVER_EMAIL, APP_PASSWORD, WEATHER_TOKEN, LATITUDE, LONGITUDE, TIMEZONE, FIREFOX_BINARY, GECKO_DRIVER, MARKET_TOKEN, STOCKS
 import smtplib
 import os
 import shutil
+from fmp_python.fmp import FMP
 
 PYCACHE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "__pycache__")
 
 class Newsletter:
     def __init__(self, debug=False):
         self.debug=debug   
-        self.html_content = '''
-<!DOCTYPE html>
+        self.html_content = '''<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>News Aggregator</title>
+<title>The Morning Report</title>
 </head>
-<body style="font-family: Arial, sans-serif; background-color: #f5f5f5; color: #333; line-height: 1.6; padding: 20px;">
-<h1 style="text-align: center; margin-bottom: 30px;">The Morning Report</h1>
+<body style="font-family: Arial, sans-serif; background-color: #f5f5f5; color: #333; line-height: 1.6; padding: 20px; max-width: 600px; margin: auto">
+<h1 style="text-align: center; margin-bottom: 30px; font-size=32px">The Morning Report</h1>
 '''
     
     def add(self, content):
         self.html_content += content + "\n"
 
     def finish(self):
-        self.html_content += '''
-</body>
+        self.html_content += '''</body>
 </html>
 '''
         if self.debug:
@@ -47,14 +46,15 @@ class Newsletter:
     def __str__(self):
      return self.html_content
     
-def format_article(newsletter, headline, summary, link):
-    newsletter.add("<div style=\"background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); margin-bottom: 20px; padding: 20px;\">")
-    newsletter.add(f"<h3 style=\"font-size: 20px; margin-bottom: 10px;\">{headline}</h3>")
-    newsletter.add(f"<p style=\"font-size: 16px; margin-bottom: 15px;\">{summary}<a href=\"{link}\" style=\"color: #007bff; text-decoration: none;\">Read more</a></p>")
-    newsletter.add("</div>")
+def format_article(headline, summary, link):
+    return f'''<div style=\"background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); margin-bottom: 20px; padding: 20px;\">
+<h3 style=\"font-size: 20px; margin-bottom: 10px;\">{headline}</h3>
+<p style=\"font-size: 16px; margin-bottom: 15px;\">{summary}<a href=\"{link}\" style=\"color: #007bff; text-decoration: none;\">Read more</a></p>
+</div>'''
         
 
 def scrape_wsj(newsletter):
+    wsj_section = ""
     # Set up Firefox options
     options = Options()
     options.binary_location = FIREFOX_BINARY
@@ -63,9 +63,9 @@ def scrape_wsj(newsletter):
 
     service = Service(GECKO_DRIVER)  # Replace with the path to your geckodriver executable
     driver = webdriver.Firefox(service=service, options=options)
-    newsletter.add("<hr style=\"border-top: 1px solid #ddd; margin-bottom: 30px;\">")
-    newsletter.add("<div style=\"margin-bottom: 50px;\">")
-    newsletter.add("<h2 style=\"text-align: center; font-size: 28px; margin-bottom: 30px;\">The Wall Street Journal</h2>")
+    wsj_section += '''<hr style=\"border-top: 1px solid #ddd; margin-bottom: 30px;\">
+<div style=\"margin-bottom: 50px;\">
+<h2 style=\"text-align: center; font-size: 28px; margin-bottom: 30px;\">WSJ Top Stories</h2>'''
 
     try:
         # Open the Wall Street Journal website
@@ -85,30 +85,34 @@ def scrape_wsj(newsletter):
             summary = summary_element.text + "<br>"
             link = link_element.get_attribute("href")
 
-            format_article(newsletter, headline, summary, link)
+            wsj_section += format_article(headline, summary, link)
+        
+        wsj_section += "</div>"
     except Exception as e:
+        print("Error scraping the WSJ:")
         print(e)
     finally:
         # Close the browser
         driver.quit()
 
-    newsletter.add("</div>")
+    newsletter.add(wsj_section)
 
 def scrape_nyt(newsletter):
-    # Set up Firefox options
-    options = Options()
-    options.binary_location = FIREFOX_BINARY
-    options.add_argument("-headless")
-
-    # Set up the Firefox driver
-    service = Service(GECKO_DRIVER)  # Replace with the path to your geckodriver executable
-    driver = webdriver.Firefox(service=service, options=options)
-
-    newsletter.add("<hr style=\"border-top: 1px solid #ddd; margin-bottom: 30px;\">")
-    newsletter.add("<div style=\"margin-bottom: 50px;\">")
-    newsletter.add("<h2 style=\"text-align: center; font-size: 28px; margin-bottom: 30px;\">The New York Times</h2>")
-
+    nyt_section = ""
     try:
+        # Set up Firefox options
+        options = Options()
+        options.binary_location = FIREFOX_BINARY
+        options.add_argument("-headless")
+
+        # Set up the Firefox driver
+        service = Service(GECKO_DRIVER)  # Replace with the path to your geckodriver executable
+        driver = webdriver.Firefox(service=service, options=options)
+
+        nyt_section += '''<hr style=\"border-top: 1px solid #ddd; margin-bottom: 30px;\">
+<div style=\"margin-bottom: 50px;\">
+<h2 style=\"text-align: center; font-size: 28px; margin-bottom: 30px;\">NYT Top Stories</h2>'''
+
         # Open the New York Times website
         driver.get('https://www.nytimes.com')
 
@@ -133,48 +137,109 @@ def scrape_nyt(newsletter):
             if summary_element: summary = summary_element.text + "<br>"
             link = link_element.get_attribute("href")
 
-            format_article(newsletter, headline, summary, link)
+            nyt_section += format_article(headline, summary, link)
+
+        nyt_section += "</div>"
 
     except Exception as e:
+        print("Error scraping the NYT:")
         print(e)
     finally:
         # Close the browser
         driver.quit()
-    
-    newsletter.add("</div>")
-    
-def get_weather(newsletter, api_key, lat, lon, timezone):
-    url = f"http://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={api_key}&units=imperial"
-    response = requests.get(url)
-    data = response.json()
 
-    newsletter.add("<hr style=\"border-top: 1px solid #ddd; margin-bottom: 30px;\">")
-    newsletter.add("<div>")
-    newsletter.add("<h2 style=\"text-align: center; font-size: 24px; margin-bottom: 20px;\">Today's Weather Forecast</h2>")
-
-    if data["cod"] == '200':
-        current_time_eastern = datetime.datetime.now(pytz.timezone(timezone))
-        for forecast in data["list"]:
-            time = datetime.datetime.fromtimestamp(forecast["dt"], pytz.utc).astimezone(pytz.timezone(timezone))
-            if time.date() != current_time_eastern.date():
-               break
-            time = time.strftime('%H:%M')
-            weather_desc = forecast["weather"][0]["description"]
-            temp = str(round(float(forecast["main"]["temp"])))
-            feels_like = forecast["main"]["feels_like"]
-            humidity = forecast["main"]["humidity"]
-            wind_speed = forecast["wind"]["speed"]
-
-            newsletter.add("<div style=\"background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); padding: 20px; margin-bottom: 10px;\">")
-            newsletter.add("<div style=\"font-size: 16px;\">")
-            newsletter.add(f"<span>{time}</span>")
-            newsletter.add(f"<span style=\"float: right;\">{weather_desc}, {temp}°F</span>")
-            newsletter.add("</div>")
-            newsletter.add("</div>")
-    else:
-        print("Error:" + data["message"])
+    newsletter.add(nyt_section)
     
-    newsletter.add("</div>")
+    
+def get_weather(newsletter):
+    weather_section = ""
+    try:
+        url = f"http://api.openweathermap.org/data/2.5/forecast?lat={LATITUDE}&lon={LONGITUDE}&appid={WEATHER_TOKEN}&units=imperial"
+        response = requests.get(url)
+        data = response.json()
+
+        weather_section += '''<hr style=\"border-top: 1px solid #ddd; margin-bottom: 30px;\">
+<div style=\"margin-bottom: 50px;\">
+<h2 style=\"text-align: center; font-size: 28px; margin-bottom: 20px;\">Today's Forecast</h2>'''
+
+        if data["cod"] == '200':
+            current_time_eastern = datetime.datetime.now(pytz.timezone(TIMEZONE))
+            for forecast in data["list"]:
+                time = datetime.datetime.fromtimestamp(forecast["dt"], pytz.utc).astimezone(pytz.timezone(TIMEZONE))
+                if time.date() != current_time_eastern.date():
+                    break
+                time = time.strftime('%H:%M')
+                weather_desc = forecast["weather"][0]["description"]
+                temp = str(round(float(forecast["main"]["temp"])))
+
+                weather_section += f'''<div style=\"background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); padding: 20px; margin-bottom: 10px;\">
+<div style=\"font-size: 16px;\">
+<span>{time}</span>
+<span style=\"float: right;\">{weather_desc}, {temp}°F</span>
+</div>
+</div>'''
+                
+            weather_section += "</div>"
+        else:
+            raise Exception(data["message"])
+        
+    except Exception as e:
+        print("Error getting weather data:")
+        print(e)
+
+    newsletter.add(weather_section)
+
+def get_markets(newsletter):
+    markets_section = ""
+    try:
+        markets_section += '''<hr style="border-top: 1px solid #ddd; margin-bottom: 30px;">
+<div>
+<h2 style="text-align: center; font-size: 28px; margin-bottom: 30px;">Markets</h2>
+<div style="background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); margin-bottom: 20px; padding: 20px; font-size: 16px">
+<table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+    <thead>
+        <tr>
+            <th style="border-bottom: 1px solid #ddd; padding: 10px; text-align: left;">Stock</th>
+            <th style="border-bottom: 1px solid #ddd; padding: 10px; text-align: left;">Price</th>
+            <th style="border-bottom: 1px solid #ddd; padding: 10px; text-align: left;">Today</th>
+            <th style="border-bottom: 1px solid #ddd; padding: 10px; text-align: left;">5 Days</th>
+        </tr>
+    </thead>
+    <tbody>  
+'''
+
+        for stock in STOCKS:
+            price_change_url = f"https://financialmodelingprep.com/api/v3/stock-price-change/{stock}?apikey={MARKET_TOKEN}"
+            price_change_data = requests.get(price_change_url).json()[0]
+
+            quote_short_url = f"https://financialmodelingprep.com/api/v3/quote-short/{stock}?apikey={MARKET_TOKEN}"
+            quote_short_data = requests.get(quote_short_url).json()[0]
+
+            price = f"{quote_short_data["price"]:.2f}"
+            today = f"{price_change_data["1D"]:.2f}"
+            five_day = f"{price_change_data["5D"]:.2f}"
+
+            today_color = "red" if float(today) < 0.0 else "green"
+            five_day_color = "red" if float(five_day) < 0.0 else "green"
+
+            markets_section += f'''<tr>
+<td style=\"border-bottom: 1px solid #ddd; padding: 10px; text-align: left;\">{stock}</td>
+<td style=\"border-bottom: 1px solid #ddd; padding: 10px; text-align: left;\">{price}</td>
+<td style=\"border-bottom: 1px solid #ddd; padding: 10px; color: {today_color}; text-align: left;\">{today}%</td>
+<td style=\"border-bottom: 1px solid #ddd; padding: 10px; color: {five_day_color}; text-align: left;\">{five_day}%</td>
+</tr>'''
+
+        markets_section += '''
+</tbody>
+</table>
+</div>
+</div>
+'''
+    except Exception as e:
+        print ("Error getting market info:")
+        print(e)
+    
+    newsletter.add(markets_section)
 
 def send_email(newsletter):
     # Send email
@@ -206,10 +271,11 @@ def clean_up():
             print(f"Error: {e.strerror}")
 
 if __name__ == "__main__":
-    newsletter = Newsletter()
+    newsletter = Newsletter(True)
     scrape_wsj(newsletter)
     scrape_nyt(newsletter)
-    get_weather(newsletter, WEATHER_TOKEN, LATITUDE, LONGITUDE, TIMEZONE)
+    get_weather(newsletter)
+    get_markets(newsletter)
     newsletter.finish()
     send_email(newsletter)
     clean_up()

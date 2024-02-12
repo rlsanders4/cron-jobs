@@ -9,7 +9,7 @@ WIFI_SPEED_DATA = os.path.join(os.path.dirname(os.path.realpath(__file__)), "wif
 def check_wifi_speed(max_attempts=5):
     for attempt in range(max_attempts):
         try:
-            st = speedtest.Speedtest()
+            st = speedtest.Speedtest(secure=True)
             download_speed = st.download() / 1024 / 1024  # Convert to Mbps
             upload_speed = st.upload() / 1024 / 1024  # Convert to Mbps
             return download_speed, upload_speed
