@@ -3,7 +3,7 @@ This repo contains a series of scripts that can be used with cron to automate ta
 
 
 ## Generate a weekly internet speed report (sent to your email)
-1) Create a <code>script_data.py</code> file that contains the following constants.
+1) Create a <code>config.py</code> file that contains the following constants.
    ```
    SENDER_EMAIL = "sender@example.com"
    RECIEVER_EMAIL = "reciever@example.com"
@@ -27,7 +27,7 @@ This repo contains a series of scripts that can be used with cron to automate ta
    ```
 
 ## Send a morning newsletter email containing the latest news headlines, weather forecast, and stock market info
-1) Create a <code>script_data.py</code> file that contains the following constants.
+1) Create a <code>config.py</code> file that contains the following constants.
    ```
    SENDER_EMAIL = "sender@example.com"
    RECIEVER_EMAIL = "reciever@example.com"

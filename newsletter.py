@@ -9,7 +9,7 @@ import datetime
 import pytz
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from script_data import SENDER_EMAIL, RECIEVER_EMAIL, APP_PASSWORD, WEATHER_TOKEN, LATITUDE, LONGITUDE, TIMEZONE, FIREFOX_BINARY, GECKO_DRIVER, MARKET_TOKEN, STOCKS
+from config import SENDER_EMAIL, RECIEVER_EMAIL, APP_PASSWORD, WEATHER_TOKEN, LATITUDE, LONGITUDE, TIMEZONE, FIREFOX_BINARY, GECKO_DRIVER, MARKET_TOKEN, STOCKS
 import smtplib
 import os
 import shutil
