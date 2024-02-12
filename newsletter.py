@@ -220,8 +220,17 @@ def get_markets(newsletter):
             today = f"{price_change_data['1D']:.2f}"
             five_day = f"{price_change_data['5D']:.2f}"
 
-            today_color = "red" if float(today) < 0.0 else "green"
-            five_day_color = "red" if float(five_day) < 0.0 else "green"
+            if float(today) < 0.0:
+                today_color = "red"
+            else:
+                today_color = "green"
+                today = "+" + today
+
+            if float(five_day) < 0.0:
+                five_day_color = "red"
+            else:
+                five_day_color = "green"
+                five_day = "+" + five_day
 
             markets_section += f'''<tr>
 <td style=\"border-bottom: 1px solid #ddd; padding: 10px; text-align: left;\">{stock}</td>
