@@ -169,13 +169,14 @@ def get_weather(newsletter):
                 if time.date() != current_time_eastern.date():
                     break
                 time = time.strftime('%H:%M')
-                weather_desc = forecast["weather"][0]["description"]
+                weather_desc = forecast["weather"][0]["description"].capitalize()
                 temp = str(round(float(forecast["main"]["temp"])))
 
-                weather_section += f'''<div style=\"background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); padding: 20px; margin-bottom: 10px;\">
-<div style=\"font-size: 16px;\">
-<span>{time}</span>
-<span style=\"float: right;\">{weather_desc}, {temp}°F</span>
+                weather_section += f'''<div style="background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); padding: 20px; margin-bottom: 10px;\">
+<div style="font-size: 16px;">
+<div style="display: inline-block; width: 20%; text-align: left">{time}</div>
+<div style="display: inline-block; width: 57%; text-align: center">{weather_desc}</div>
+<div style="display: inline-block; width: 20%; text-align: right">{temp}°F</div>
 </div>
 </div>'''
                 
