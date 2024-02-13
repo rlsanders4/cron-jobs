@@ -27,7 +27,7 @@ class Newsletter:
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Morning Report</title>
 </head>
-<body style="font-family: Arial, sans-serif; background-color: #f5f5f5; color: #333; line-height: 1.6; padding: 20px; max-width: 600px; margin: auto">
+<body style="font-family: Arial, sans-serif; background-color: #f5f5f5; color: #333; line-height: 1.6; padding: 20px; max-width: 600px; margin: auto; border-radius: 8px">
 <h1 style="text-align: center; margin-bottom: 30px; font-size: 32px">The Morning Report</h1>
 '''
     
@@ -64,7 +64,7 @@ def scrape_wsj(newsletter):
     service = Service(GECKO_DRIVER)  # Replace with the path to your geckodriver executable
     driver = webdriver.Firefox(service=service, options=options)
     wsj_section += '''<hr style=\"border-top: 1px solid #ddd; margin-bottom: 30px;\">
-<div style=\"margin-bottom: 50px;\">
+<div>
 <h2 style=\"text-align: center; font-size: 28px; margin-bottom: 30px;\">WSJ Top Stories</h2>'''
 
     try:
@@ -110,7 +110,7 @@ def scrape_nyt(newsletter):
         driver = webdriver.Firefox(service=service, options=options)
 
         nyt_section += '''<hr style=\"border-top: 1px solid #ddd; margin-bottom: 30px;\">
-<div style=\"margin-bottom: 50px;\">
+<div>
 <h2 style=\"text-align: center; font-size: 28px; margin-bottom: 30px;\">NYT Top Stories</h2>'''
 
         # Open the New York Times website
@@ -159,7 +159,7 @@ def get_weather(newsletter):
         data = response.json()
 
         weather_section += '''<hr style=\"border-top: 1px solid #ddd; margin-bottom: 30px;\">
-<div style=\"margin-bottom: 50px;\">
+<div style="margin-bottom: 20px">
 <h2 style=\"text-align: center; font-size: 28px; margin-bottom: 20px;\">Today's Forecast</h2>'''
 
         if data["cod"] == '200':
@@ -197,13 +197,13 @@ def get_markets(newsletter):
 <div>
 <h2 style="text-align: center; font-size: 28px; margin-bottom: 30px;">Markets</h2>
 <div style="background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); margin-bottom: 20px; padding: 20px; font-size: 16px">
-<table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+<table style="width: 100%; border-collapse: collapse; text-align: center">
     <thead>
         <tr>
-            <th style="border-bottom: 1px solid #ddd; padding: 10px; text-align: left;">Stock</th>
-            <th style="border-bottom: 1px solid #ddd; padding: 10px; text-align: left;">Price</th>
-            <th style="border-bottom: 1px solid #ddd; padding: 10px; text-align: left;">Today</th>
-            <th style="border-bottom: 1px solid #ddd; padding: 10px; text-align: left;">5 Days</th>
+            <th style="border-bottom: 1px solid #ddd; padding: 10px">Stock</th>
+            <th style="border-bottom: 1px solid #ddd; padding: 10px">Price</th>
+            <th style="border-bottom: 1px solid #ddd; padding: 10px">Today</th>
+            <th style="border-bottom: 1px solid #ddd; padding: 10px">5 Days</th>
         </tr>
     </thead>
     <tbody>  
@@ -233,10 +233,10 @@ def get_markets(newsletter):
                 five_day = "+" + five_day
 
             markets_section += f'''<tr>
-<td style=\"border-bottom: 1px solid #ddd; padding: 10px; text-align: left;\">{stock}</td>
-<td style=\"border-bottom: 1px solid #ddd; padding: 10px; text-align: left;\">{price}</td>
-<td style=\"border-bottom: 1px solid #ddd; padding: 10px; color: {today_color}; text-align: left;\">{today}%</td>
-<td style=\"border-bottom: 1px solid #ddd; padding: 10px; color: {five_day_color}; text-align: left;\">{five_day}%</td>
+<td style=\"border-bottom: 1px solid #ddd; padding: 10px\">{stock}</td>
+<td style=\"border-bottom: 1px solid #ddd; padding: 10px\">{price}</td>
+<td style=\"border-bottom: 1px solid #ddd; padding: 10px; color: {today_color}\">{today}%</td>
+<td style=\"border-bottom: 1px solid #ddd; padding: 10px; color: {five_day_color}\">{five_day}%</td>
 </tr>'''
 
         markets_section += '''
