@@ -283,10 +283,10 @@ def clean_up():
 
 if __name__ == "__main__":
     newsletter = Newsletter()
-    scrape_wsj(newsletter)
-    scrape_nyt(newsletter)
     get_weather(newsletter)
     get_markets(newsletter)
+    scrape_wsj(newsletter)
+    scrape_nyt(newsletter)
     newsletter.finish()
     send_email(newsletter)
     clean_up()
